@@ -35,7 +35,7 @@ def cat_index(request):
 def cat_detail(request, cat_id):
     cat = Cat.objects.get(id=cat_id)
     toys_cat_doesnt_have = Toy.objects.exclude(id__in=cat.toys.all().values_list("id"))
-    toys = Toy.objects.all()  # fetch all toys
+
     feeding_form = FeedingForm()
     return render(
         request,
@@ -97,4 +97,11 @@ class ToyDelete(DeleteView):
 
 def associate_toy(request, cat_id, toy_id):
     Cat.objects.get(id=cat_id).toys.add(toy_id)
+    return redirect("cat-detail", cat_id=cat_id)
+
+
+def remove_toy(request, cat_id, toy_id):
+    cat = Cat.objects.get(id=cat_id)
+    toy = Toy.objects.get(id=toy_id)
+    cat.toys.remove(toy)
     return redirect("cat-detail", cat_id=cat_id)
